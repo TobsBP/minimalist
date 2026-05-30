@@ -61,6 +61,14 @@ Ou pelo terminal:
 ./mvnw spring-boot:run
 ```
 
+Necessario criar uma .env
+
+``` exemplo
+DB_URL=url
+DB_USERNAME=username
+DB_PASSWORD=password
+```
+
 A API estará disponível em:
 
 ```
