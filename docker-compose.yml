@@ -1,0 +1,75 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: minimalist_db
+    environment:
+      POSTGRES_DB: minimalist_store
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minimalist_net
+
+  back-app:
+    build:
+      context: ./back-app
+      dockerfile: Dockerfile
+    container_name: minimalist_back
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/minimalist_store
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - minimalist_net
+
+  web-app:
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile
+    container_name: minimalist_web
+    environment:
+      NEXT_PUBLIC_API_URL: http://back-app:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - back-app
+    networks:
+      - minimalist_net
+
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile.Jenkins
+    container_name: minimalist_jenkins
+    user: root
+    ports:
+      - "8090:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      # Expose host Docker socket so Jenkins can spawn agent containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - minimalist_net
+
+volumes:
+  postgres_data:
+  jenkins_data:
+
+networks:
+  minimalist_net:
+    driver: bridge
