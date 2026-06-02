@@ -58,15 +58,15 @@ const categories = [
 
 export default function Home() {
   return (
-    <div className="store-root min-h-screen flex flex-col" style={{ backgroundColor: '#fcf9f4' }}>
+    <div
+      className="store-root min-h-screen flex flex-col"
+      style={{ backgroundColor: '#fcf9f4' }}
+    >
       <SiteHeader />
 
       <main className="flex-1">
         {/* Hero */}
-        <section
-          className="w-full border-b"
-          style={{ borderColor: '#cbc6bc' }}
-        >
+        <section className="w-full border-b" style={{ borderColor: '#cbc6bc' }}>
           <div className="max-w-[1280px] mx-auto px-4 md:px-6 py-16 md:py-28 flex flex-col md:flex-row gap-12 md:gap-0 items-start">
             <div className="flex-1">
               <p
@@ -87,8 +87,8 @@ export default function Home() {
                 className="text-base leading-relaxed max-w-sm mb-10"
                 style={{ color: '#5d5f5e' }}
               >
-                Curated goods for those who buy less, but buy better. Each piece is selected for
-                durability, restraint, and quiet usefulness.
+                Curated goods for those who buy less, but buy better. Each piece is
+                selected for durability, restraint, and quiet usefulness.
               </p>
               <Button
                 asChild
@@ -226,7 +226,8 @@ export default function Home() {
                 className="font-serif text-3xl md:text-4xl font-light leading-snug"
                 style={{ color: '#21201a' }}
               >
-                On restraint &<br />the objects we keep.
+                On restraint &<br />
+                the objects we keep.
               </h2>
             </div>
             <Button

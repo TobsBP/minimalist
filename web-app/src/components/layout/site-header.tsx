@@ -17,7 +17,10 @@ export function SiteHeader() {
             MINIMALIST
           </Link>
           <nav className="hidden md:flex gap-6 text-base">
-            {[{ label: 'Cart', href: '/cart' }, { label: 'Orders', href: '/orders' }].map(({ label, href }) => (
+            {[
+              { label: 'Cart', href: '/cart' },
+              { label: 'Orders', href: '/orders' },
+            ].map(({ label, href }) => (
               <Link
                 key={label}
                 href={href}

@@ -22,10 +22,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint .",
+    "lint": "pnpx @biomejs/biome check --write src",
     "format": "biome format --write .",
     "check": "biome check --write .",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test --reporter=list",
+    "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
