@@ -50,6 +50,23 @@ services:
     networks:
       - minimalist_net
 
+  e2e:
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile
+      target: tester
+    container_name: minimalist_e2e
+    environment:
+      BASE_URL: http://minimalist_web:3000
+      CI: "true"
+    depends_on:
+      web-app:
+        condition: service_started
+    networks:
+      - minimalist_net
+    profiles:
+      - test
+
   jenkins:
     build:
       context: .

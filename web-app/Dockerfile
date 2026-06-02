@@ -20,6 +20,23 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN pnpm build
 
+FROM node:22 AS tester
+WORKDIR /app
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN npx playwright install --with-deps chromium
+
+ENV CI=true
+ENV BASE_URL=http://minimalist_web:3000
+
+CMD ["pnpm", "test:e2e"]
+
 FROM node:22-alpine AS runner
 WORKDIR /app
 
