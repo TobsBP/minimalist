@@ -24,9 +24,11 @@
     "start": "next start",
     "lint": "biome lint .",
     "format": "biome format --write .",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@biomejs/biome": "^2.4.16",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
