@@ -17,10 +17,13 @@ export function SiteHeader() {
             MINIMALIST
           </Link>
           <nav className="hidden md:flex gap-6 text-base">
-            {['Shop', 'Journal', 'Archive'].map((label) => (
+            {[
+              { label: 'Cart', href: '/cart' },
+              { label: 'Orders', href: '/orders' },
+            ].map(({ label, href }) => (
               <Link
                 key={label}
-                href={`/${label.toLowerCase()}`}
+                href={href}
                 className="transition-opacity hover:opacity-60"
                 style={{ color: '#5d5f5e' }}
               >

@@ -22,11 +22,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint .",
+    "lint": "pnpx @biomejs/biome check --write src",
     "format": "biome format --write .",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "test:e2e": "playwright test --reporter=list",
+    "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@biomejs/biome": "^2.4.16",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
