@@ -11,7 +11,7 @@ class CPFValidateTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "52998224725",  
+            "52998224725",
             "62749146763",
             "02320519505"
     })
