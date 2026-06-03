@@ -96,8 +96,8 @@ src/main/java/com/minimalist/backapp/
 
 - [x] Configuração inicial do projeto
 - [x] Docker Compose com PostgreSQL
-- [ ] Autenticação com JWT
-- [ ] CRUD de produtos com filtros
+- [x] Autenticação com JWT
+- [x] CRUD de produtos com filtros
 - [ ] Carrinho de compras
 - [ ] Pedidos e checkout
 - [ ] Login com Google (OAuth2) (opcional, menor prioridade)
@@ -106,20 +106,122 @@ src/main/java/com/minimalist/backapp/
 
 ## Endpoints disponíveis
 
-> Documentação completa será adicionada conforme os módulos forem implementados.
+A API se comunica via JSON e usa autenticação JWT para as rotas protegidas. Todas as chamadas autenticadas devem incluir o cabeçalho:
 
-### Produtos (Devemos adicionar mais rotas depois, principalmente as de autenticação)
+```http
+Authorization: Bearer <token>
+```
+
+### Autenticação
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/user/register` | Registra um novo usuário |
+| POST | `/user/login` | Faz login e retorna token JWT |
+
+Exemplo `POST /user/register`:
+```json
+{
+  "name": "João Silva",
+  "email": "joao@example.com",
+  "password": "senha123",
+  "role": "USER",
+  "cpf": "123.456.789-00",
+  "dateOfBirth": "1990-01-01",
+  "phone": "+5511999999999",
+  "address": "Rua Exemplo, 123",
+  "nationality": "BR"
+}
+```
+
+Exemplo `POST /user/login`:
+```json
+{
+  "email": "joao@example.com",
+  "password": "senha123"
+}
+```
+
+### Usuários
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/user` | Lista usuários (requer autenticação) |
+| DELETE | `/user/delete` | Deleta um usuário por ID (requer autenticação) |
+
+Exemplo `DELETE /user/delete`:
+```json
+{
+  "id": "uuid-do-usuario"
+}
+```
+
+### Produtos
 | Método | Rota | Descrição |
 |---|---|---|
 | GET | `/products` | Lista todos os produtos |
 | GET | `/products/{id}` | Busca produto por ID |
-| POST | `/products` | Cria produto |
+| POST | `/products` | Cria produto (requer autenticação) |
+| DELETE | `/products/{id}` | Remove produto por ID (requer autenticação) |
+
+Exemplo `POST /products`:
+```json
+{
+  "name": "Camiseta Minimalista",
+  "material": "Algodão",
+  "price": 99.90,
+  "imageUrl": "https://example.com/image.jpg",
+  "category": "CLOTHING"
+}
+```
+
+### Carrinho
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/cart` | Retorna o carrinho do usuário autenticado |
+| POST | `/cart/items` | Adiciona item ao carrinho |
+| PUT | `/cart/items/{itemId}` | Atualiza quantidade de um item no carrinho |
+| DELETE | `/cart/items/{itemId}` | Remove item do carrinho |
+| DELETE | `/cart` | Limpa o carrinho do usuário |
+
+Exemplo `POST /cart/items`:
+```json
+{
+  "productId": 1,
+  "quantity": 2
+}
+```
+
+Exemplo `PUT /cart/items/{itemId}`:
+```json
+{
+  "quantity": 3
+}
+```
+
+### Pedidos
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/orders/checkout` | Finaliza pedido do carrinho do usuário autenticado |
+| GET | `/orders` | Lista pedidos do usuário autenticado |
+| GET | `/orders/{id}` | Detalha pedido por ID do usuário autenticado |
+| PATCH | `/orders/{id}/cancel` | Cancela pedido por ID do usuário autenticado |
+
+Exemplo `POST /orders/checkout`:
+```json
+{
+  "shippingAddress": "Rua Exemplo, 123, São Paulo, SP"
+}
+```
 
 ---
+
+## Segurança e acesso
+- `/user/register` e `/user/login` são públicos.
+- `/products` e `/products/{id}` podem ser acessados sem autenticação.
+- As demais rotas exigem token JWT válido.
 
 ## Integração com o Frontend
 
 Este backend expõe apenas rotas REST em JSON — não há renderização de HTML.
-O grupo de frontend deve configurar as requisições para `http://localhost:8080` em desenvolvimento.
+O frontend deve enviar requisições para `http://localhost:8080` em desenvolvimento.
 
-CORS está habilitado para todas as origens em desenvolvimento. Em produção, configurar a URL do frontend.
+CORS está habilitado para todas as origens em desenvolvimento. Em produção, configure a URL do frontend.
