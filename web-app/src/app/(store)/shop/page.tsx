@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
 import { useCart } from '@/modules/cart/hooks/use-cart'
+import { useProducts } from '@/modules/products/hooks/use-products'
 
 type Product = {
   id: number
@@ -13,51 +14,6 @@ type Product = {
   category: string
   img: string
 }
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: 'MONOLITH VASE',
-    price: 120,
-    category: 'Ceramics',
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGGOlVrZ74ZCCbV_c06Ip4zK-ysKzz7DY77_r3pC0pRixSwxNJkhdjdsVCAhQTUaMV5FjXYQjld7sN08GqbUecey-fzl6pYFiIaF5svWXeGsFGXhhGwNcIKId8IUA3j6ZWOR6ugk4dBJO4gkaAIGR77IxSiB01etrttfNKzKZwRXaDfIIEh7_4yk0ouiMibaIsSCnJTjnZ369c0vMlasAGt2tCa9B4pUN8E5yhXNZDttl1L0EmPECvg89zg6iK-BytxvHw1SjCpkE',
-  },
-  {
-    id: 2,
-    name: 'ANGLE LAMP',
-    price: 285,
-    category: 'Lighting',
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD6HzBexAOqbMvEZH0yNC1THKGfoMlIRi66GeT_QYSUio644iSWGK4v7Y-2gNZjib73ZSOryre7KIfVBZGCGFh9_O_e3S5oN2FraBQCP0FnL2eA8C5gl4xgV6OJ0p5We7XxkNlCGfGAEdJQPaLwAiLcqt-6MDmq4EQeYmWSJJzsPYmrGeUzS5z0mGao1QV0nt4NS59U4IpW2iKgCDXE5XAs3_W8enq5ZGKl3Dn-sK-QJbWxbeM9CB9nsg9l58KU0hLOiiU-_-a_RZY',
-  },
-  {
-    id: 3,
-    name: 'GRID CHAIR',
-    price: 850,
-    category: 'Furniture',
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGGOlVrZ74ZCCbV_c06Ip4zK-ysKzz7DY77_r3pC0pRixSwxNJkhdjdsVCAhQTUaMV5FjXYQjld7sN08GqbUecey-fzl6pYFiIaF5svWXeGsFGXhhGwNcIKId8IUA3j6ZWOR6ugk4dBJO4gkaAIGR77IxSiB01etrttfNKzKZwRXaDfIIEh7_4yk0ouiMibaIsSCnJTjnZ369c0vMlasAGt2tCa9B4pUN8E5yhXNZDttl1L0EmPECvg89zg6iK-BytxvHw1SjCpkE',
-  },
-  {
-    id: 4,
-    name: 'CYLINDER CUP',
-    price: 45,
-    category: 'Ceramics',
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAx7kx82sCym7yTUQIitxV9lARDaAyyAC55Bl-FU88tXynpTSfvrBDonLZNFhqLMdAHEDwOUqukxcB_ybDS1lsYfe5o_WGLa6RBxM6mthXWF9S1YoaW7avnhm5qEoLQksOwxrsT5nxZkDhrwmgimUHolMJPGrNT2Ca44Lxto_ZMwmMvTYUyuA3dJ9RDrH-2ll44FWzrNFjD5VnxjB_jAe2461bGG7JqM7XsSgVJ3ZzymzIMZqKTXQIBXrNyxmgbhcFNeHVlSsi0gSQ',
-  },
-  {
-    id: 5,
-    name: 'ALU BOX',
-    price: 95,
-    category: 'Furniture',
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuByp-9DrEDECkEo6n3MZ0HwfRZElHBwIV2qL-1ysBg61ljEbwRZLPf9J1ivJy70SS5yNVsS2taR-6y50oNBTyOVzjNrBOkvrBfmU7uiTZXEh7QpoPa3WKSM6fN0ybmom0NyvHyWF4UwhD2hrNJjSXBdMwTLIsk2GwWBP14396IrlTr4b9SanC6rU-TV0S3oeMHsq2hw_xmt17yLVENoq0ofySrLye0hYXLtKHUrhNjQ4XkZ8l7hh5icB-b4rw0KLOHGqm2CR7pjeHs',
-  },
-  {
-    id: 6,
-    name: 'LINE CLOCK',
-    price: 140,
-    category: 'Furniture',
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD6HzBexAOqbMvEZH0yNC1THKGfoMlIRi66GeT_QYSUio644iSWGK4v7Y-2gNZjib73ZSOryre7KIfVBZGCGFh9_O_e3S5oN2FraBQCP0FnL2eA8C5gl4xgV6OJ0p5We7XxkNlCGfGAEdJQPaLwAiLcqt-6MDmq4EQeYmWSJJzsPYmrGeUzS5z0mGao1QV0nt4NS59U4IpW2iKgCDXE5XAs3_W8enq5ZGKl3Dn-sK-QJbWxbeM9CB9nsg9l58KU0hLOiiU-_-a_RZY',
-  },
-]
 
 const categories = ['All Objects', 'Ceramics', 'Furniture', 'Lighting', 'Textiles']
 
@@ -72,11 +28,20 @@ const priceRanges: PriceRange[] = [
 type SortKey = 'newest' | 'price-asc' | 'price-desc'
 
 export default function ShopPage() {
+  const { products: rawProducts, loading, error } = useProducts()
   const { addItem } = useCart()
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('All Objects')
   const [activePrice, setActivePrice] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('newest')
+
+  const products: Product[] = rawProducts.map((p) => ({
+    id: p.id,
+    name: p.name.toUpperCase(),
+    price: p.price,
+    category: p.category.charAt(0) + p.category.slice(1).toLowerCase(),
+    img: p.imageUrl,
+  }))
 
   const filtered = useMemo(() => {
     let list = [...products]
@@ -216,8 +181,14 @@ export default function ShopPage() {
               </span>
             </div>
 
+            {error && (
+              <p className="mb-6 text-sm text-destructive">{error}</p>
+            )}
+
             {/* Grid */}
-            {filtered.length === 0 ? (
+            {loading ? (
+              <p className="text-base py-24 text-center text-muted-foreground">Loading…</p>
+            ) : filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3">
                 <p className="text-sm" style={{ color: '#5d5f5e' }}>No objects found.</p>
                 <button
@@ -250,8 +221,8 @@ export default function ShopPage() {
                     <button
                       type="button"
                       onClick={() => addItem(product.id)}
-                      className="w-full border text-[10px] font-semibold tracking-widest uppercase py-2.5 transition-colors hover:bg-[#21201a] hover:text-white"
-                      style={{ borderColor: '#21201a', color: '#21201a' }}
+                      className="w-full border text-[10px] font-semibold tracking-widest uppercase py-2.5 transition-colors text-[#21201a] hover:bg-[#21201a] hover:text-white"
+                      style={{ borderColor: '#21201a' }}
                     >
                       ADD TO CART
                     </button>
