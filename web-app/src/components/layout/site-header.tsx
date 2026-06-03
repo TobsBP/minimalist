@@ -30,6 +30,7 @@ export function SiteHeader() {
           </Link>
           <nav className="hidden md:flex gap-6 text-base">
             {[
+              { label: 'Shop', href: '/shop' },
               { label: 'Cart', href: '/cart' },
               { label: 'Orders', href: '/orders' },
             ].map(({ label, href }) => (
