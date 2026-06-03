@@ -1,7 +1,12 @@
+'use client'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 
 function GoogleIcon() {
   return (
@@ -27,6 +32,27 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
+  const router = useRouter()
+  const { login } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSubmitting(true)
+    try {
+      await login({ email, password })
+      router.push('/')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not sign in')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <main className="w-full max-w-[400px] flex flex-col gap-10">
       <header className="flex flex-col gap-2 items-center text-center">
@@ -38,7 +64,7 @@ export default function LoginPage() {
         </p>
       </header>
 
-      <form className="flex flex-col gap-6 w-full" action="#">
+      <form className="flex flex-col gap-6 w-full" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4">
           {/* Email */}
           <div className="flex flex-col gap-2">
@@ -55,6 +81,8 @@ export default function LoginPage() {
               placeholder="Enter your email"
               required
               autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="rounded-none h-auto px-4 py-3"
             />
           </div>
@@ -82,14 +110,22 @@ export default function LoginPage() {
               placeholder="••••••••"
               required
               autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="rounded-none h-auto px-4 py-3"
             />
           </div>
         </div>
 
+        {error && <p className="text-[11px] font-medium text-destructive">{error}</p>}
+
         <div className="flex flex-col gap-3 pt-2">
-          <Button type="submit" className="w-full rounded-none h-auto py-3 text-base">
-            Sign In
+          <Button
+            type="submit"
+            disabled={submitting}
+            className="w-full rounded-none h-auto py-3 text-base"
+          >
+            {submitting ? 'Signing in…' : 'Sign In'}
           </Button>
           <Button
             type="button"
