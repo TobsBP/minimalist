@@ -1,0 +1,72 @@
+{
+  "info": {
+    "_postman_id": "bef09f44-1716-4fc3-8cd7-ab0f65d24482",
+    "name": "tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53129325"
+  },
+  "item": [
+    {
+      "name": "register",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Valida se o status da resposta é 200 OK\r",
+              "pm.test(\"Status code é 200 (Sucesso ao registrar)\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "// 2. Valida se o backend retornou um token JWT\r",
+              "pm.test(\"Resposta possui token JWT\", function () {\r",
+              "    var token = pm.response.text();\r",
+              "    pm.expect(token).to.be.a('string');\r",
+              "    pm.expect(token).to.not.be.empty;\r",
+              "    pm.expect(token).to.match(/^eyJ/); // todo JWT começa com eyJ\r",
+              "});\r",
+              "\r",
+              "// 3. Valida se o tempo de resposta foi saudável\r",
+              "pm.test(\"Tempo de resposta menor que 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});\r",
+              "\r",
+              "// 4. Salva o token para uso nas próximas requisições\r",
+              "var token = pm.response.text();\r",
+              "pm.environment.set(\"token\", token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Joe Navarro\",\r\n  \"email\": \"joe.{{$randomInt}}@minimalist.com\",\r\n  \"password\": \"comportamentoEstrategico2026\",\r\n  \"role\": \"CUSTOMER\",\r\n  \"cpf\": \"11144477735\",\r\n  \"dateOfBirth\": \"1953-05-26\",\r\n  \"phone\": \"+5535999998888\",\r\n  \"address\": \"Av. João de Camargo, 510 - Centro, Santa Rita do Sapucaí\",\r\n  \"nationality\": \"BR\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/user/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "user",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
