@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+
+        stage('Back: Test') {
+            steps {
+                dir('back-app') {
+                    sh './mvnw test'
+                }
+            }
+            post {
+                always {
+                    junit 'back-app/target/surefire-reports/*.xml'
+                    publishHTML(target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : 'back-app/target/site/jacoco',
+                        reportFiles          : 'index.html',
+                        reportName           : 'JaCoCo Coverage'
+                    ])
+                }
+            }
+        }
+
+        stage('Back: Build') {
+            steps {
+                dir('back-app') {
+                    sh './mvnw package -DskipTests -q'
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'back-app/target/*.jar', fingerprint: true
+                }
+            }
+        }
+    }
+}
