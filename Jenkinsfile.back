@@ -16,14 +16,6 @@ pipeline {
             post {
                 always {
                     junit 'back-app/target/surefire-reports/*.xml'
-                    publishHTML(target: [
-                        allowMissing         : true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll              : true,
-                        reportDir            : 'back-app/target/site/jacoco',
-                        reportFiles          : 'index.html',
-                        reportName           : 'JaCoCo Coverage'
-                    ])
                 }
             }
         }
