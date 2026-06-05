@@ -1,11 +1,3 @@
-"""
-notify.py — Minimalist Store
-─────────────────────────────
-Quando este container inicia, o docker-compose já garantiu (via depends_on
-com condition: service_healthy) que postgres, back-app e web-app estão
-saudáveis. O script confirma o estado final via Docker SDK e envia o e-mail.
-"""
-
 import os
 import smtplib
 import socket
