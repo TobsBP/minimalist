@@ -1,11 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'mcr.microsoft.com/playwright:v1.52.0-noble'
-            // --network: join the same bridge network as web-app and back-app
-            args '--ipc=host -u root --network minimalist_net'
-        }
-    }
+    agent any
 
     environment {
         PNPM_HOME = '/root/.local/share/pnpm'
@@ -21,54 +15,99 @@ pipeline {
             }
         }
 
-        stage('Install pnpm') {
-            steps {
-                sh 'npm install -g pnpm@11.4.0'
-                sh 'pnpm --version'
-            }
-        }
+        stage('Back-End') {
+            stages {
+                stage('Back: Test') {
+                    steps {
+                        dir('back-app') {
+                            sh 'chmod +x mvnw'
+                            sh './mvnw test'
+                        }
+                    }
+                    post {
+                        always {
+                            junit 'back-app/target/surefire-reports/*.xml'
+                        }
+                    }
+                }
 
-        stage('Install Dependencies') {
-            steps {
-                dir('web-app') {
-                    sh 'pnpm install --frozen-lockfile'
+                stage('Back: Build') {
+                    steps {
+                        dir('back-app') {
+                            sh 'chmod +x mvnw'
+                            sh './mvnw package -DskipTests -q'
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'back-app/target/*.jar', fingerprint: true
+                        }
+                    }
                 }
             }
         }
 
-        stage('Install Playwright Browsers') {
-            steps {
-                dir('web-app') {
-                    sh 'pnpm exec playwright install --with-deps chromium'
+        stage('Front-End') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.52.0-noble'
+                    // --network: join the same bridge network as web-app and back-app
+                    args '--ipc=host -u root --network minimalist_net'
+                    reuseNode true
                 }
             }
-        }
 
-        stage('Build') {
-            steps {
-                dir('web-app') {
-                    sh 'pnpm build'
+            stages{
+                stage('Install pnpm') {
+                    steps {
+                        sh 'npm install -g pnpm@11.4.0'
+                        sh 'pnpm --version'
+                    }
                 }
-            }
-        }
 
-        stage('Run Playwright Tests') {
-            steps {
-                dir('web-app') {
-                    sh 'pnpm exec playwright test'
+                stage('Install Dependencies') {
+                    steps {
+                        dir('web-app') {
+                            sh 'pnpm install --frozen-lockfile'
+                        }
+                    }
                 }
-            }
-            post {
-                always {
-                    dir('web-app') {
-                        publishHTML(target: [
-                            allowMissing         : true,
-                            alwaysLinkToLastBuild: true,
-                            keepAll              : true,
-                            reportDir            : 'playwright-report',
-                            reportFiles          : 'index.html',
-                            reportName           : 'Playwright Report'
-                        ])
+
+                stage('Install Playwright Browsers') {
+                    steps {
+                        dir('web-app') {
+                            sh 'pnpm exec playwright install --with-deps chromium'
+                        }
+                    }
+                }
+
+                stage('Build') {
+                    steps {
+                        dir('web-app') {
+                            sh 'pnpm build'
+                        }
+                    }
+                }
+
+                stage('Run Playwright Tests') {
+                    steps {
+                        dir('web-app') {
+                            sh 'pnpm exec playwright test'
+                        }
+                    }
+                    post {
+                        always {
+                            dir('web-app') {
+                                publishHTML(target: [
+                                    allowMissing         : true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll              : true,
+                                    reportDir            : 'playwright-report',
+                                    reportFiles          : 'index.html',
+                                    reportName           : 'Playwright Report'
+                                ])
+                            }
+                        }
                     }
                 }
             }
