@@ -1,0 +1,11 @@
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir docker==7.1.0
+
+WORKDIR /app
+COPY scripts/notify.py .
+
+ENTRYPOINT ["python", "-u", "notify.py"]
