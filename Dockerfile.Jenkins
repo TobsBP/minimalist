@@ -24,3 +24,12 @@ RUN apt-get update && apt-get install -y \
 RUN groupadd -f docker && usermod -aG docker jenkins
 
 USER jenkins
+
+# install plugins
+RUN jenkins-plugin-cli --plugins \
+    docker-workflow \
+    docker-plugin \
+    git \
+    workflow-aggregator \
+    junit \
+    htmlpublisher

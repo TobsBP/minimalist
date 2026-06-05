@@ -1,7 +1,19 @@
-import { Moon, ShoppingCart } from 'lucide-react'
+'use client'
+
+import { ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 
 export function SiteHeader() {
+  const router = useRouter()
+  const { user, loading, logout } = useAuth()
+
+  async function handleLogout() {
+    await logout()
+    router.push('/')
+  }
+
   return (
     <header
       className="w-full sticky top-0 z-50 border-b"
@@ -18,6 +30,7 @@ export function SiteHeader() {
           </Link>
           <nav className="hidden md:flex gap-6 text-base">
             {[
+              { label: 'Shop', href: '/shop' },
               { label: 'Cart', href: '/cart' },
               { label: 'Orders', href: '/orders' },
             ].map(({ label, href }) => (
@@ -33,14 +46,30 @@ export function SiteHeader() {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <button
-            type="button"
-            className="p-2 transition-opacity hover:opacity-60"
-            style={{ color: '#21201a' }}
-            aria-label="Toggle dark mode"
-          >
-            <Moon className="size-5" />
-          </button>
+          {!loading &&
+            (user ? (
+              <>
+                <span className="hidden sm:inline text-sm" style={{ color: '#5d5f5e' }}>
+                  {user.email}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-sm transition-opacity hover:opacity-60"
+                  style={{ color: '#21201a' }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm transition-opacity hover:opacity-60"
+                style={{ color: '#21201a' }}
+              >
+                Login
+              </Link>
+            ))}
           <Link
             href="/cart"
             className="border-b-2 pb-0.5"
