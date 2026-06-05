@@ -2,10 +2,14 @@ pipeline {
     agent any
 
     environment {
-        PNPM_HOME = '/root/.local/share/pnpm'
-        PATH = "${env.PNPM_HOME}:${env.PATH}"
-        CI = 'true'
-        BASE_URL = 'http://minimalist_web:3000'
+        PNPM_HOME    = '/root/.local/share/pnpm'
+        PATH         = "${env.PNPM_HOME}:${env.PATH}"
+        CI           = 'true'
+        BASE_URL     = 'http://minimalist_web:3000'
+        NOTIFY_EMAIL = "${env.NOTIFY_EMAIL}"
+        SMTP_USER    = "${env.SMTP_USER}"
+        SMTP_PASS    = "${env.SMTP_PASS}"
+        EMAIL_FROM   = "${env.SMTP_USER}"
     }
 
     stages {
@@ -122,10 +126,10 @@ pipeline {
             }
         }
         success {
-            echo 'Playwright tests passed.'
+            sh "python3 notify/scripts/notify_pipeline.py --status SUCCESS --email ${NOTIFY_EMAIL}"
         }
         failure {
-            echo 'Playwright tests failed. Check the report for details.'
+            sh "python3 notify/scripts/notify_pipeline.py --status FAILURE --email ${NOTIFY_EMAIL}"
         }
     }
 }
