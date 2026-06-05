@@ -97,7 +97,7 @@ services:
 
   notifier:
     build:
-      context: .
+      context: ./notify
       dockerfile: Dockerfile.notifier
     container_name: minimalist_notifier
     depends_on:
