@@ -80,7 +80,7 @@ export default function SignupPage() {
         email,
         password,
         role: 'CUSTOMER',
-        cpf,
+        cpf: cpf.replace(/\D/g, ''),
         dateOfBirth: dob ? toISODate(dob) : '',
         phone,
         address,
