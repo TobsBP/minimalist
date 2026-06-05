@@ -20,7 +20,7 @@ SMTP_USER     = os.environ["SMTP_USER"]
 SMTP_PASS     = os.environ["SMTP_PASS"]
 EMAIL_FROM    = os.environ.get("EMAIL_FROM", SMTP_USER)
 EMAIL_TO      = [e.strip() for e in os.environ["EMAIL_TO"].split(",")]
-EMAIL_SUBJECT = os.environ.get("EMAIL_SUBJECT", "🚀 Minimalist Store — ambiente no ar!")
+EMAIL_SUBJECT = os.environ.get("EMAIL_SUBJECT", "Minimalist Store — ambiente no ar!")
 HOSTNAME      = socket.gethostname()
 
 
