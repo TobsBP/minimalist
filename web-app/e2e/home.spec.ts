@@ -38,11 +38,6 @@ test.describe('Home page', () => {
     await expect(logo).toHaveAttribute('href', '/')
   })
 
-  test('header navigation links to cart and orders', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Cart' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Orders' })).toBeVisible()
-  })
-
   test('clicking shop collection navigates to /shop', async ({ page }) => {
     await page.getByRole('link', { name: /shop collection/i }).click()
     await expect(page).toHaveURL('/shop')

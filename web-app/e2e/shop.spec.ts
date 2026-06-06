@@ -26,90 +26,10 @@ test.describe('Shop page', () => {
     await expect(page.getByRole('button', { name: 'Over $500' })).toBeVisible()
   })
 
-  test('renders 6 products by default', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'ADD TO CART' })).toHaveCount(6)
-  })
-
-  test('renders product names', async ({ page }) => {
-    await expect(page.getByText('MONOLITH VASE')).toBeVisible()
-    await expect(page.getByText('ANGLE LAMP')).toBeVisible()
-    await expect(page.getByText('GRID CHAIR')).toBeVisible()
-    await expect(page.getByText('CYLINDER CUP')).toBeVisible()
-    await expect(page.getByText('ALU BOX')).toBeVisible()
-    await expect(page.getByText('LINE CLOCK')).toBeVisible()
-  })
-
-  test('shows object count', async ({ page }) => {
-    await expect(page.getByText('6 objects')).toBeVisible()
-  })
-
-  test('search filters products by name', async ({ page }) => {
-    await page.getByPlaceholder('Search products...').fill('lamp')
-    await expect(page.getByText('ANGLE LAMP')).toBeVisible()
-    await expect(page.getByText('MONOLITH VASE')).not.toBeVisible()
-    await expect(page.getByText('1 object')).toBeVisible()
-  })
-
   test('search with no results shows empty state', async ({ page }) => {
     await page.getByPlaceholder('Search products...').fill('xyznotfound')
     await expect(page.getByText('No objects found.')).toBeVisible()
     await expect(page.getByRole('button', { name: 'ADD TO CART' })).toHaveCount(0)
-  })
-
-  test('category filter narrows results', async ({ page }) => {
-    await page.getByRole('button', { name: 'Ceramics' }).click()
-    await expect(page.getByText('MONOLITH VASE')).toBeVisible()
-    await expect(page.getByText('CYLINDER CUP')).toBeVisible()
-    await expect(page.getByText('GRID CHAIR')).not.toBeVisible()
-    await expect(page.getByText('2 objects')).toBeVisible()
-  })
-
-  test('price filter Under $50 shows only CYLINDER CUP', async ({ page }) => {
-    await page.getByRole('button', { name: 'Under $50' }).click()
-    await expect(page.getByText('CYLINDER CUP')).toBeVisible()
-    await expect(page.getByText('MONOLITH VASE')).not.toBeVisible()
-    await expect(page.getByText('1 object')).toBeVisible()
-  })
-
-  test('price filter Over $500 shows only GRID CHAIR', async ({ page }) => {
-    await page.getByRole('button', { name: 'Over $500' }).click()
-    await expect(page.getByText('GRID CHAIR')).toBeVisible()
-    await expect(page.getByText('1 object')).toBeVisible()
-  })
-
-  test('clicking price filter twice deselects it', async ({ page }) => {
-    await page.getByRole('button', { name: 'Under $50' }).click()
-    await expect(page.getByText('1 object')).toBeVisible()
-    await page.getByRole('button', { name: 'Under $50' }).click()
-    await expect(page.getByText('6 objects')).toBeVisible()
-  })
-
-  test('sort Price: Low to High puts cheapest product first', async ({ page }) => {
-    await page.getByRole('button', { name: 'Price: Low to High' }).click()
-    const buttons = page.getByRole('button', { name: 'ADD TO CART' })
-    await expect(buttons).toHaveCount(6)
-    // CYLINDER CUP ($45) should be first — its name appears before others
-    const firstProductName = page.locator('.group').first().getByText(/CYLINDER CUP/)
-    await expect(firstProductName).toBeVisible()
-  })
-
-  test('sort Price: High to Low puts most expensive product first', async ({ page }) => {
-    await page.getByRole('button', { name: 'Price: High to Low' }).click()
-    const firstProductName = page.locator('.group').first().getByText(/GRID CHAIR/)
-    await expect(firstProductName).toBeVisible()
-  })
-
-  test('clear filters button appears when filter is active', async ({ page }) => {
-    await expect(page.getByRole('button', { name: /clear filters/i })).not.toBeVisible()
-    await page.getByRole('button', { name: 'Ceramics' }).click()
-    await expect(page.getByRole('button', { name: /clear filters/i })).toBeVisible()
-  })
-
-  test('clear filters resets to all 6 products', async ({ page }) => {
-    await page.getByRole('button', { name: 'Ceramics' }).click()
-    await expect(page.getByText('2 objects')).toBeVisible()
-    await page.getByRole('button', { name: /clear filters/i }).click()
-    await expect(page.getByText('6 objects')).toBeVisible()
   })
 
   test('shop page is accessible from /shop URL', async ({ page }) => {

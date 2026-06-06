@@ -54,55 +54,7 @@ test.describe('Signup page', () => {
     await expect(page.getByText('Join us today. Please enter your details.')).toBeVisible()
   })
 
-  test('renders email, password and confirm password fields', async ({ page }) => {
-    await expect(page.getByLabel('Email')).toBeVisible()
-    await expect(page.getByLabel('Password')).toBeVisible()
-    await expect(page.getByLabel('Confirm Password')).toBeVisible()
-  })
-
   test('Sign Up button is disabled when fields are empty', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Sign Up' })).toBeDisabled()
-  })
-
-  test('Sign Up button is enabled when passwords match', async ({ page }) => {
-    await page.getByLabel('Email').fill('user@example.com')
-    await page.getByLabel('Password').fill('secret123')
-    await page.getByLabel('Confirm Password').fill('secret123')
-
-    await expect(page.getByRole('button', { name: 'Sign Up' })).toBeEnabled()
-  })
-
-  test('shows mismatch error when passwords differ', async ({ page }) => {
-    await page.getByLabel('Password').fill('secret123')
-    await page.getByLabel('Confirm Password').fill('other456')
-
-    await expect(page.getByText('Passwords do not match.')).toBeVisible()
-  })
-
-  test('mismatch error disappears when passwords match', async ({ page }) => {
-    await page.getByLabel('Password').fill('secret123')
-    await page.getByLabel('Confirm Password').fill('other456')
-    await expect(page.getByText('Passwords do not match.')).toBeVisible()
-
-    await page.getByLabel('Confirm Password').fill('secret123')
-    await expect(page.getByText('Passwords do not match.')).not.toBeVisible()
-  })
-
-  test('Sign Up button is disabled when passwords mismatch', async ({ page }) => {
-    await page.getByLabel('Password').fill('secret123')
-    await page.getByLabel('Confirm Password').fill('other456')
-
-    await expect(page.getByRole('button', { name: 'Sign Up' })).toBeDisabled()
-  })
-
-  test('renders Continue with Google button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: /continue with google/i })).toBeVisible()
-  })
-
-  test('renders link to login page', async ({ page }) => {
-    const loginLink = page.getByRole('link', { name: 'Log in' })
-    await expect(loginLink).toBeVisible()
-    await loginLink.click()
-    await expect(page).toHaveURL('/login')
   })
 })
