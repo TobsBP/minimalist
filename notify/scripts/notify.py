@@ -216,7 +216,7 @@ def send_email(msg: MIMEMultipart) -> None:
         server.starttls()
         server.login(SMTP_USER, SMTP_PASS)
         server.sendmail(EMAIL_FROM, EMAIL_TO, msg.as_string())
-    print("✅ E-mail enviado!")
+    print("E-mail enviado!")
 
 def main():
     ts = now_utc()

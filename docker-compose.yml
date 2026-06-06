@@ -19,9 +19,7 @@ services:
       - minimalist_net
 
   back-app:
-    build:
-      context: ./back-app
-      dockerfile: Dockerfile
+    image: joao07812/minimalist_s07:latest
     container_name: minimalist_back
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/minimalist_store
@@ -34,7 +32,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:8080/user/login; [ $? -ne 4 ] && exit 0 || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 8
@@ -55,7 +53,7 @@ services:
       back-app:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:3000; [ $? -ne 4 ] && exit 0 || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 5
