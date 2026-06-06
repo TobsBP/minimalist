@@ -92,3 +92,4 @@ networks:
   minimalist_net:
     name: minimalist_net
     driver: bridge
+    attachable: true
