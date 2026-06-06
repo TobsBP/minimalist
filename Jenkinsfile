@@ -2,14 +2,10 @@ pipeline {
     agent any
 
     environment {
-        PNPM_HOME    = '/root/.local/share/pnpm'
-        PATH         = "${env.PNPM_HOME}:${env.PATH}"
-        CI           = 'true'
-        BASE_URL     = 'http://localhost:3000' 
-        NOTIFY_EMAIL = "${env.NOTIFY_EMAIL}"
-        SMTP_USER    = "${env.SMTP_USER}"
-        SMTP_PASS    = "${env.SMTP_PASS}"
-        EMAIL_FROM   = "${env.SMTP_USER}"
+        PNPM_HOME = '/root/.local/share/pnpm'
+        PATH = "${env.PNPM_HOME}:${env.PATH}"
+        CI = 'true'
+        BASE_URL = 'http://minimalist_web:3000'
     }
 
     stages {
@@ -55,12 +51,13 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.52.0-noble'
+                    // --network: join the same bridge network as web-app and back-app
                     args '--ipc=host -u root --network minimalist_net'
                     reuseNode true
                 }
             }
 
-            stages {
+            stages{
                 stage('Install pnpm') {
                     steps {
                         sh 'npm install -g pnpm@11.4.0'
@@ -95,18 +92,12 @@ pipeline {
                 stage('Run Playwright Tests') {
                     steps {
                         dir('web-app') {
-                            sh 'pnpm start > nextjs.log 2>&1 &'
-                            
-                            sh 'sleep 10'
-                            
                             sh 'pnpm exec playwright test'
                         }
                     }
                     post {
                         always {
                             dir('web-app') {
-                                archiveArtifacts artifacts: 'nextjs.log', allowEmptyArchive: true
-
                                 publishHTML(target: [
                                     allowMissing         : true,
                                     alwaysLinkToLastBuild: true,
@@ -131,10 +122,10 @@ pipeline {
             }
         }
         success {
-            sh "python3 notify/scripts/notify_pipeline.py --status SUCCESS --email ${NOTIFY_EMAIL}"
+            echo 'Playwright tests passed.'
         }
         failure {
-            sh "python3 notify/scripts/notify_pipeline.py --status FAILURE --email ${NOTIFY_EMAIL}"
+            echo 'Playwright tests failed. Check the report for details.'
         }
     }
 }
