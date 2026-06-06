@@ -5,7 +5,7 @@ pipeline {
         PNPM_HOME    = '/root/.local/share/pnpm'
         PATH         = "${env.PNPM_HOME}:${env.PATH}"
         CI           = 'true'
-        BASE_URL     = 'http://minimalist_web:3000'
+        BASE_URL     = 'http://localhost:3000'
         NOTIFY_EMAIL = "${env.NOTIFY_EMAIL}"
         SMTP_USER    = "${env.SMTP_USER}"
         SMTP_PASS    = "${env.SMTP_PASS}"
@@ -55,13 +55,12 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.52.0-noble'
-                    // --network: join the same bridge network as web-app and back-app
                     args '--ipc=host -u root --network minimalist_net'
                     reuseNode true
                 }
             }
 
-            stages{
+            stages {
                 stage('Install pnpm') {
                     steps {
                         sh 'npm install -g pnpm@11.4.0'

@@ -7,8 +7,13 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html', { outputFolder: 'playwright-report' }]],
+  webServer: process.env.CI ? {
+    command: 'pnpm start',
+    url: 'http://localhost:3000',
+    reuseExistingServer: false,
+    timeout: 60000,
+  } : undefined,
   use: {
-    // Locally: http://localhost:3000 | CI/Docker: http://minimalist_web:3000
     baseURL: process.env.BASE_URL ?? 'http://localhost:3000',
     trace: 'on-first-retry',
   },
